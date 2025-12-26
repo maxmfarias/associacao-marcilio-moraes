@@ -108,7 +108,7 @@
                             <img src="https://i.ibb.co/99GdH9xh/CBJ1.jpg" alt="CBJ" class="h-10 w-auto object-contain">
                         </a>
                         <a href="https://www.zempo.com.br" target="_blank" rel="noopener noreferrer" class="hover:opacity-80 transition-opacity bg-white/90 rounded px-1" title="ZEMPO">
-                            <img src="https://image2url.com/r2/bucket1/images/1766555920349-af791102-ee12-477e-b06f-9e9f500d5dc7.webp" alt="ZEMPO" class="h-10 w-auto object-contain">
+                            <img src="https://zempo.com.br/wp-content/uploads/2019/07/logo-zempo.png" alt="ZEMPO" class="h-10 w-auto object-contain">
                         </a>
                     </div>
                 </div>
@@ -192,13 +192,10 @@
                                 A Associação Marcílio Moraes é uma entidade dedicada ao ensino, à prática e à difusão do judô tradicional, fundamentado nos princípios do Judô Kodokan. Sob a liderança do sensei Marcílio Moraes, Kodansha 6º Dan, a associação carrega uma trajetória sólida construída ao longo de mais de quarenta anos de dedicação ao judô.
                             </p>
                             <p>
-                                Nossa atuação é pautada não apenas no desenvolvimento técnico e competitivo dos praticantes, mas, sobretudo, na formação do caráter, na disciplina, no respeito e nos valores morais que constituem a essência do judô idealizado por Jigoro Kano. A experiência acumulada ao longo de décadas se reflete em um método de ensino sério, responsável e comprometido com a evolução contínua de crianças, jovens e adultos.
+                                Nossa atuação é pautada não apenas no desenvolvimento técnico e competitivo dos praticantes, mas, sobretudo, na formação do caráter, na disciplina, no respeito e nos valores morais que constituem a essência do judô idealizado por Jigoro Kano.
                             </p>
                             <p>
                                 Com a inauguração de nossa nova sede no município de Paulista, ampliamos nosso alcance e reafirmamos o compromisso com a comunidade, oferecendo um espaço adequado, seguro e preparado para a prática do judô em seus aspectos educacional, esportivo e social.
-                            </p>
-                            <p>
-                                A Associação Marcílio Moraes acredita no judô como instrumento de transformação pessoal e social, formando cidadãos conscientes, atletas preparados e praticantes alinhados aos valores do caminho suave.
                             </p>
                         </div>
                     </div>
@@ -208,39 +205,24 @@
                     <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">Nossa Filosofia</h3>
                     <div class="space-y-4">
                         <div class="flex items-start gap-3">
-                            <div class="bg-[#E85D4A] text-white p-2 rounded-full flex-shrink-0">
-                                <i data-lucide="check" class="w-5 h-5"></i>
-                            </div>
+                            <div class="bg-[#E85D4A] text-white p-2 rounded-full flex-shrink-0"><i data-lucide="check" class="w-5 h-5"></i></div>
                             <div>
                                 <h4 class="font-bold text-gray-800 dark:text-white mb-1">Respeito e Disciplina</h4>
                                 <p class="text-sm text-gray-600 dark:text-gray-400">Valores fundamentais do judô aplicados dentro e fora do tatame</p>
                             </div>
                         </div>
                         <div class="flex items-start gap-3">
-                            <div class="bg-[#E85D4A] text-white p-2 rounded-full flex-shrink-0">
-                                <i data-lucide="check" class="w-5 h-5"></i>
-                            </div>
+                            <div class="bg-[#E85D4A] text-white p-2 rounded-full flex-shrink-0"><i data-lucide="check" class="w-5 h-5"></i></div>
                             <div>
                                 <h4 class="font-bold text-gray-800 dark:text-white mb-1">Tradição Kodokan</h4>
                                 <p class="text-sm text-gray-600 dark:text-gray-400">Mantemos viva a essência do judô criado por Jigoro Kano</p>
                             </div>
                         </div>
                         <div class="flex items-start gap-3">
-                            <div class="bg-[#E85D4A] text-white p-2 rounded-full flex-shrink-0">
-                                <i data-lucide="check" class="w-5 h-5"></i>
-                            </div>
+                            <div class="bg-[#E85D4A] text-white p-2 rounded-full flex-shrink-0"><i data-lucide="check" class="w-5 h-5"></i></div>
                             <div>
                                 <h4 class="font-bold text-gray-800 dark:text-white mb-1">Formação Integral</h4>
                                 <p class="text-sm text-gray-600 dark:text-gray-400">Desenvolvimento físico, mental e moral dos praticantes</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-3">
-                            <div class="bg-[#E85D4A] text-white p-2 rounded-full flex-shrink-0">
-                                <i data-lucide="check" class="w-5 h-5"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-gray-800 dark:text-white mb-1">Excelência Técnica</h4>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Compromisso com o ensino de qualidade e aperfeiçoamento constante</p>
                             </div>
                         </div>
                     </div>
@@ -286,7 +268,11 @@
                             {% endif %}
                         </div>
                         <h3 class="text-2xl font-bold text-gray-800 dark:text-white text-center mb-2">{{ sensei.nome }}</h3>
-                        <p class="text-center text-[#E85D4A] font-bold mb-4">{{ sensei.graduacao }}</p>
+                        
+                        <div class="flex items-center justify-center gap-2 mb-4 belt-container" data-graduacao="{{ sensei.graduacao }}">
+                            <div class="w-4 h-4 rounded-sm border border-gray-200 shadow-sm belt-square"></div>
+                            <p class="font-bold belt-text">{{ sensei.graduacao }}</p>
+                        </div>
                        
                         <div class="bg-orange-50 dark:bg-gray-800 border border-[#E85D4A]/20 rounded-lg p-4 mb-4">
                             <p class="text-sm text-gray-700 dark:text-gray-300 text-center mb-2">{{ sensei.cargo }}</p>
@@ -339,7 +325,14 @@
                             <div><p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Idade</p><p class="text-gray-800 dark:text-gray-200 font-semibold">{{ atleta.idade }} anos</p></div>
                             <div><p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Peso</p><p class="text-gray-800 dark:text-gray-200 font-semibold">{{ atleta.peso }}</p></div>
                             <div><p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Categoria</p><p class="text-gray-800 dark:text-gray-200 font-semibold">{{ atleta.categoria }}</p></div>
-                            <div><p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Graduação</p><p class="text-[#E85D4A] font-semibold">{{ atleta.graduacao }}</p></div>
+                            
+                            <div class="flex flex-col">
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Graduação</p>
+                                <div class="flex items-center gap-2 belt-container" data-graduacao="{{ atleta.graduacao }}">
+                                    <div class="w-3 h-3 rounded-sm border border-gray-200 shadow-sm belt-square"></div>
+                                    <p class="font-semibold belt-text">{{ atleta.graduacao }}</p>
+                                </div>
+                            </div>
                         </div>
                        
                         <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
@@ -372,7 +365,14 @@
                     <div class="grid grid-cols-2 gap-3 mb-4 bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
                         <div><p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Idade</p><p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{{ atleta.idade }}</p></div>
                         <div><p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Peso</p><p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{{ atleta.peso }}</p></div>
-                        <div class="col-span-2"><p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Graduação</p><p class="text-sm text-[#E85D4A] font-semibold">{{ atleta.graduacao }}</p></div>
+                        
+                        <div class="col-span-2 flex flex-col">
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Graduação</p>
+                            <div class="flex items-center gap-2 belt-container" data-graduacao="{{ atleta.graduacao }}">
+                                <div class="w-3 h-3 rounded-sm border border-gray-200 shadow-sm belt-square"></div>
+                                <p class="text-sm font-semibold belt-text">{{ atleta.graduacao }}</p>
+                            </div>
+                        </div>
                     </div>
                     <div class="border-t border-gray-200 dark:border-gray-600 pt-3">
                         <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">Conquistas:</p>
@@ -557,6 +557,45 @@
                 mobileMenu.classList.toggle('hidden');
             });
         }
+
+        // --- SISTEMA DE CORES DAS FAIXAS ---
+        document.addEventListener('DOMContentLoaded', function() {
+            const beltContainers = document.querySelectorAll('.belt-container');
+            
+            beltContainers.forEach(container => {
+                const graduacaoText = container.getAttribute('data-graduacao').toLowerCase();
+                const square = container.querySelector('.belt-square');
+                const text = container.querySelector('.belt-text');
+                
+                let color = '#E85D4A'; // Cor padrão (Laranja do site)
+
+                if (graduacaoText.includes('marrom')) {
+                    color = '#5D4037'; // Marrom
+                } else if (graduacaoText.includes('preta') || graduacaoText.includes('dan')) {
+                    color = '#000000'; // Preta
+                } else if (graduacaoText.includes('roxa')) {
+                    color = '#7B1FA2'; // Roxa
+                } else if (graduacaoText.includes('verde')) {
+                    color = '#388E3C'; // Verde
+                } else if (graduacaoText.includes('laranja')) {
+                    color = '#F57C00'; // Laranja
+                } else if (graduacaoText.includes('azul')) {
+                    color = '#1976D2'; // Azul
+                } else if (graduacaoText.includes('amarela')) {
+                    color = '#FBC02D'; // Amarela
+                } else if (graduacaoText.includes('branca')) {
+                    color = '#F5F5F5'; // Branca (cinza bem claro)
+                    square.style.border = '1px solid #BDBDBD'; // Borda para aparecer no fundo branco
+                    text.style.color = '#757575'; // Texto cinza para leitura
+                    square.style.backgroundColor = color;
+                    return; // Retorna para não sobrescrever
+                }
+
+                // Aplica a cor
+                square.style.backgroundColor = color;
+                text.style.color = color;
+            });
+        });
 
         // Dark Mode Logic
         const themeToggleBtn = document.getElementById('theme-toggle');
