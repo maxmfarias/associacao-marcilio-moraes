@@ -24,7 +24,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Seu app principal
-    'core','cloudinary_storage',
+    'core',
+    'cloudinary_storage',
     'cloudinary',
 ]
 
