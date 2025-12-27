@@ -256,7 +256,7 @@
             </div>
 
             <div class="grid md:grid-cols-3 gap-8">
-                {% for sensei in senseis %}
+                {% for sensei in senseis|dictsort:"nome" %}
                 <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl overflow-hidden transform hover:scale-105 transition-all dark:border dark:border-gray-700">
                     <div class="h-3 bg-[#E85D4A]"></div>
                     <div class="p-8">
@@ -301,7 +301,7 @@
             </div>
 
             <div class="grid lg:grid-cols-2 gap-8 mb-12">
-                {% for atleta in atletas_destaque %}
+                {% for atleta in atletas_destaque|dictsort:"nome" %}
                 <div class="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-shadow border-2 border-[#E85D4A]/20">
                     <div class="h-2 bg-[#E85D4A]"></div>
                     <div class="p-8">
@@ -350,7 +350,7 @@
 
             <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 text-center">Mais Atletas de Destaque</h3>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-                {% for atleta in outros_atletas %}
+                {% for atleta in outros_atletas|dictsort:"nome" %}
                 <div class="bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl p-6 hover:border-[#E85D4A]/50 hover:shadow-lg transition-all">
                     <div class="flex items-start justify-between mb-4">
                         <div class="bg-[#E85D4A]/10 w-12 h-12 rounded-full overflow-hidden flex items-center justify-center">
@@ -500,7 +500,7 @@
                             </div>
                              <div class="flex items-start gap-4">
                                 <div class="bg-[#FFF5F3] dark:bg-gray-700 p-2 rounded-full flex-shrink-0"><i data-lucide="phone" class="w-5 h-5 text-[#E85D4A]"></i></div>
-                                <div><p class="text-sm text-gray-500 dark:text-gray-400 mb-1">Telefone</p><p class="text-gray-700 dark:text-gray-300"> (81) 8964-2435 /  (81) 9964-1487</p></div>
+                                <div><p class="text-sm text-gray-500 dark:text-gray-400 mb-1">Telefone</p><p class="text-gray-700 dark:text-gray-300"> (81) 8964-2435 /  (81) 9964-1487</p></div>
                             </div>
                         </div>
                     </div>
