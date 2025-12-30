@@ -241,7 +241,7 @@
 
             <div class="relative rounded-2xl overflow-hidden shadow-xl border dark:border-gray-700">
     <img src="https://i.ibb.co/BH1H5qDw/eyecatch20141014-1.jpg" alt="Judô Tradicional" class="w-full h-96 object-cover opacity-90 dark:opacity-70">
-    
+   
     <div class="absolute inset-0 bg-gradient-to-r from-gray-900/90 to-transparent flex items-center">
         <div class="text-white p-12 max-w-2xl">
             <h3 class="text-3xl font-bold mb-4">O Caminho Suave</h3>
@@ -328,7 +328,13 @@
                         </div>
                        
                         <div class="grid grid-cols-2 gap-4 mb-6 bg-white dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
-                            <div><p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Idade</p><p class="text-gray-800 dark:text-gray-200 font-semibold">{{ atleta.idade }} anos</p></div>
+                            <div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Idade</p>
+                                <p class="text-gray-800 dark:text-gray-200 font-semibold">
+                                    {{ atleta.idade }} anos 
+                                    <span class="text-xs font-normal text-gray-500 block">({{ atleta.data_nascimento|date:"d/m/Y" }})</span>
+                                </p>
+                            </div>
                             <div><p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Peso</p><p class="text-gray-800 dark:text-gray-200 font-semibold">{{ atleta.peso }}</p></div>
                             <div><p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Categoria</p><p class="text-gray-800 dark:text-gray-200 font-semibold">{{ atleta.categoria }}</p></div>
                             <div><p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Graduação</p><p class="text-[#E85D4A] font-semibold">{{ atleta.graduacao }}</p></div>
@@ -362,7 +368,13 @@
                     </div>
                     <h4 class="text-xl font-bold text-gray-800 dark:text-white mb-4">{{ atleta.nome }}</h4>
                     <div class="grid grid-cols-2 gap-3 mb-4 bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
-                        <div><p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Idade</p><p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{{ atleta.idade }}</p></div>
+                        <div>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Idade</p>
+                            <p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">
+                                {{ atleta.idade }} anos
+                                <span class="block text-xs font-normal text-gray-500">({{ atleta.data_nascimento|date:"d/m/Y" }})</span>
+                            </p>
+                        </div>
                         <div><p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Peso</p><p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{{ atleta.peso }}</p></div>
                         <div class="col-span-2"><p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Graduação</p><p class="text-sm text-[#E85D4A] font-semibold">{{ atleta.graduacao }}</p></div>
                     </div>
@@ -492,7 +504,7 @@
                             </div>
                              <div class="flex items-start gap-4">
                                 <div class="bg-[#FFF5F3] dark:bg-gray-700 p-2 rounded-full flex-shrink-0"><i data-lucide="phone" class="w-5 h-5 text-[#E85D4A]"></i></div>
-                                <div><p class="text-sm text-gray-500 dark:text-gray-400 mb-1">Telefone</p><p class="text-gray-700 dark:text-gray-300"> (81) 9 8964-2435 /  (81) 9 9964-1487</p></div>
+                                <div><p class="text-sm text-gray-500 dark:text-gray-400 mb-1">Telefone</p><p class="text-gray-700 dark:text-gray-300"> (81) 9 8964-2435 /  (81) 9 9964-1487</p></div>
                             </div>
                         </div>
                     </div>
@@ -526,8 +538,8 @@
         <div class="container mx-auto px-4 py-12">
             <div class="grid md:grid-cols-2 gap-8 mb-8">
                 <div>
-                     <h3 class="text-xl font-bold text-white">Associação Marcílio Moraes</h3>
-                     <p class="text-sm text-gray-400 mt-2">Dedicados ao ensino e difusão do judô tradicional Kodokan.</p>
+                      <h3 class="text-xl font-bold text-white">Associação Marcílio Moraes</h3>
+                      <p class="text-sm text-gray-400 mt-2">Dedicados ao ensino e difusão do judô tradicional Kodokan.</p>
                 </div>
                 <div>
                     <h4 class="text-lg font-bold text-white mb-4">Contato</h4>
