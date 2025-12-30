@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-chave-padrao-desenvolvimento')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# O Render define a variável RENDER automaticamente, então isso ajuda a ajustar o DEBUG
+# O Render define a variável RENDER automaticamente
 DEBUG = 'RENDER' not in os.environ
 
 ALLOWED_HOSTS = ['*']
@@ -17,21 +17,25 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    # Apps do Cloudinary (Recomendado colocar antes do staticfiles)
+    'cloudinary_storage',
+    'cloudinary',
+
+    # Apps Padrão do Django
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     # Seu app principal
     'core',
-    'cloudinary_storage',
-    'cloudinary',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    "whitenoise.middleware.WhiteNoiseMiddleware", # <--- O Whitenoise fica aqui
+    "whitenoise.middleware.WhiteNoiseMiddleware", # O Whitenoise fica aqui
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -63,7 +67,6 @@ WSGI_APPLICATION = 'setup.wsgi.application'
 
 # Database
 # Configuração para usar o Banco do Render/Neon se disponível, ou o local se não tiver
-
 DATABASES = {
     'default': dj_database_url.config(
         default='sqlite:///db.sqlite3',
@@ -73,7 +76,6 @@ DATABASES = {
 
 
 # Password validation
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -91,24 +93,25 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # Internationalization
-
 LANGUAGE_CODE = 'pt-br'
-
 TIME_ZONE = 'America/Recife'
-
 USE_I18N = True
-
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-
+# --- ARQUIVOS ESTÁTICOS (CSS, JS) ---
+# Gerenciados pelo Whitenoise
 STATIC_URL = 'static/'
-
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
+
+# --- ARQUIVOS DE MÍDIA (FOTOS) ---
+# Gerenciados pelo Cloudinary
+MEDIA_URL = '/media/'  # URL base para acessar as mídias
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+# Configuração das Chaves do Cloudinary
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': 'dwt6fblk4',
     'API_KEY': '168731212392565',
@@ -117,6 +120,4 @@ CLOUDINARY_STORAGE = {
 
 
 # Default primary key field type
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
