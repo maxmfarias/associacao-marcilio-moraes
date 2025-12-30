@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import date
 
 class Sensei(models.Model):
     nome = models.CharField(max_length=100)
@@ -17,13 +18,26 @@ class Atleta(models.Model):
     nome = models.CharField(max_length=100)
     foto = models.ImageField(upload_to='atletas/', blank=True, null=True)
     destaque = models.BooleanField(default=False, help_text="Se marcado, aparece no carrossel principal.")
-    idade = models.IntegerField()
+    
+    # --- MUDANÇA AQUI: Trocamos 'idade' fixa por Data de Nascimento ---
+    data_nascimento = models.DateField(verbose_name="Data de Nascimento")
+    
     peso = models.CharField(max_length=20, help_text="Ex: 73kg")
     categoria = models.CharField(max_length=50, help_text="Ex: Juvenil, Sênior")
     graduacao = models.CharField(max_length=50, help_text="Ex: Faixa Preta 1º Dan")
     
-    # Armazena as conquistas como texto. No frontend, você quebra as linhas.
-    principais_conquistas = models.TextField(help_text="Uma conquista por linha")
+    # Adicionei blank=True e null=True para não dar erro se deixar vazio
+    principais_conquistas = models.TextField(help_text="Uma conquista por linha", blank=True, null=True)
+
+    # --- LÓGICA DA IDADE AUTOMÁTICA ---
+    @property
+    def idade(self):
+        """Calcula a idade automaticamente baseada no nascimento."""
+        if self.data_nascimento:
+            today = date.today()
+            # Retorna a diferença de anos, ajustando se o aniversário ainda não ocorreu este ano
+            return today.year - self.data_nascimento.year - ((today.month, today.day) < (self.data_nascimento.month, self.data_nascimento.day))
+        return 0
 
     def __str__(self):
         return self.nome
