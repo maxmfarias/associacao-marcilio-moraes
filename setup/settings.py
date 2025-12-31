@@ -5,23 +5,30 @@ import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key used in production secret!
+# --- SEGURANÇA ---
+# Em produção (Render), a chave deve vir das variáveis de ambiente.
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-chave-padrao-desenvolvimento')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-# O Render define a variável RENDER automaticamente
+# DEBUG: False em produção (se a variável RENDER existir), True localmente.
 DEBUG = 'RENDER' not in os.environ
 
 ALLOWED_HOSTS = ['*']
 
+# IMPORTANTE PARA ONLINE: Permite o login via HTTPS no Render
+# Substitua pelo seu domínio real se tiver um personalizado, ou mantenha o onrender.com
+CSRF_TRUSTED_ORIGINS = ['https://*.onrender.com']
+
 # Application definition
 
 INSTALLED_APPS = [
-    # Apps do Cloudinary (Recomendado colocar antes do staticfiles)
+    # 1. JAZZMIN (Tem que ser o primeiro da lista!)
+    'jazzmin',
+
+    # 2. Apps do Cloudinary
     'cloudinary_storage',
     'cloudinary',
 
-    # Apps Padrão do Django
+    # 3. Apps Padrão do Django
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -29,13 +36,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # Seu app principal
+    # 4. Seu app principal
     'core',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    "whitenoise.middleware.WhiteNoiseMiddleware", # O Whitenoise fica aqui
+    "whitenoise.middleware.WhiteNoiseMiddleware", # O Whitenoise fica aqui (Crucial para o CSS online)
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -65,8 +72,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'setup.wsgi.application'
 
 
-# Database
-# Configuração para usar o Banco do Render/Neon se disponível, ou o local se não tiver
+# --- BANCO DE DADOS ---
 DATABASES = {
     'default': dj_database_url.config(
         default='sqlite:///db.sqlite3',
@@ -75,7 +81,7 @@ DATABASES = {
 }
 
 
-# Password validation
+# --- VALIDAÇÃO DE SENHA ---
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -92,7 +98,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
+# --- INTERNACIONALIZAÇÃO ---
 LANGUAGE_CODE = 'pt-br'
 TIME_ZONE = 'America/Recife'
 USE_I18N = True
@@ -100,18 +106,16 @@ USE_TZ = True
 
 
 # --- ARQUIVOS ESTÁTICOS (CSS, JS) ---
-# Gerenciados pelo Whitenoise
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# Essa configuração garante que o Whitenoise sirva os arquivos de forma otimizada e comprimida
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 
 # --- ARQUIVOS DE MÍDIA (FOTOS) ---
-# Gerenciados pelo Cloudinary
-MEDIA_URL = '/media/'  # URL base para acessar as mídias
+MEDIA_URL = '/media/'
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
-# Configuração das Chaves do Cloudinary
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': 'dwt6fblk4',
     'API_KEY': '168731212392565',
@@ -119,5 +123,31 @@ CLOUDINARY_STORAGE = {
 }
 
 
-# Default primary key field type
+# --- CONFIGURAÇÃO JAZZMIN (Visual do Admin) ---
+JAZZMIN_SETTINGS = {
+    "site_title": "Marcílio Moraes Admin",
+    "site_header": "Gestão Judô",
+    "site_brand": "Marcílio Moraes",
+    "welcome_sign": "Painel Administrativo",
+    "copyright": "Associação Marcílio Moraes",
+    "search_model": ["auth.User", "core.Atletas"], # Barra de busca no topo
+
+    # Ícones do Menu Lateral (FontAwesome)
+    "icons": {
+        "auth": "fas fa-users-cog",
+        "auth.user": "fas fa-user",
+        "auth.Group": "fas fa-users",
+        "core.Atletas": "fas fa-user-ninja",
+        "core.Eventos": "fas fa-calendar-alt",
+        "core.Contatos": "fas fa-address-book",
+    },
+    
+    "show_ui_builder": True, # Botão para personalizar cores
+}
+
+JAZZMIN_UI_TWEAKS = {
+    "theme": "flatly", # Tema moderno (azul e branco)
+    "dark_mode_theme": "darkly",
+}
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
