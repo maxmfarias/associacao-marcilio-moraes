@@ -15,7 +15,6 @@ DEBUG = 'RENDER' not in os.environ
 ALLOWED_HOSTS = ['*']
 
 # IMPORTANTE PARA ONLINE: Permite o login via HTTPS no Render
-# Substitua pelo seu domínio real se tiver um personalizado, ou mantenha o onrender.com
 CSRF_TRUSTED_ORIGINS = ['https://*.onrender.com']
 
 # Application definition
@@ -42,7 +41,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    "whitenoise.middleware.WhiteNoiseMiddleware", # O Whitenoise fica aqui (Crucial para o CSS online)
+    "whitenoise.middleware.WhiteNoiseMiddleware", # O Whitenoise fica aqui
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -106,27 +105,16 @@ USE_TZ = True
 
 
 # --- ARQUIVOS ESTÁTICOS (CSS, JS) ---
+# Aqui estava o problema. Esta é a versão simplificada que funciona.
 
-# 1. O URL deve começar com barra / (Crucial para não quebrar links)
 STATIC_URL = '/static/'
-
-# 2. Onde o Django vai JOGAR os arquivos no final (Render lê daqui)
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# 3. Onde o Django vai PROCURAR arquivos no seu projeto
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
-
-# 4. OS CAÇADORES DE ARQUIVOS (O Pulo do Gato)
-# Isso garante que ele procure na pasta acima E dentro do Jazzmin/Admin
-STATICFILES_FINDERS = [
-    "django.contrib.staticfiles.finders.FileSystemFinder",
-    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
-]
-
-# 5. Armazenamento simplificado para evitar erros no Render
+# Configuração do WhiteNoise (Sem Manifest para evitar erros)
 STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+
+# OBS: Removi STATICFILES_DIRS e FINDERS.
+# Assim o Django usa o padrão automático e encontra o Jazzmin sozinho.
 
 
 # --- ARQUIVOS DE MÍDIA (FOTOS) ---
@@ -147,9 +135,8 @@ JAZZMIN_SETTINGS = {
     "site_brand": "Marcílio Moraes",
     "welcome_sign": "Painel Administrativo",
     "copyright": "Associação Marcílio Moraes",
-    "search_model": ["auth.User", "core.Atletas"], # Barra de busca no topo
+    "search_model": ["auth.User", "core.Atletas"], 
 
-    # Ícones do Menu Lateral (FontAwesome)
     "icons": {
         "auth": "fas fa-users-cog",
         "auth.user": "fas fa-user",
@@ -159,11 +146,11 @@ JAZZMIN_SETTINGS = {
         "core.Contatos": "fas fa-address-book",
     },
     
-    "show_ui_builder": True, # Botão para personalizar cores
+    "show_ui_builder": True,
 }
 
 JAZZMIN_UI_TWEAKS = {
-    "theme": "flatly", # Tema moderno (azul e branco)
+    "theme": "flatly",
     "dark_mode_theme": "darkly",
 }
 
