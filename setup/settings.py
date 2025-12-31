@@ -109,7 +109,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # Essa configuração garante que o Whitenoise sirva os arquivos de forma otimizada e comprimida
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
 
 # --- ARQUIVOS DE MÍDIA (FOTOS) ---
