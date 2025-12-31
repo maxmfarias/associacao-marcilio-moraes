@@ -106,9 +106,26 @@ USE_TZ = True
 
 
 # --- ARQUIVOS ESTÁTICOS (CSS, JS) ---
-STATIC_URL = 'static/'
+
+# 1. O URL deve começar com barra / (Crucial para não quebrar links)
+STATIC_URL = '/static/'
+
+# 2. Onde o Django vai JOGAR os arquivos no final (Render lê daqui)
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-# Essa configuração garante que o Whitenoise sirva os arquivos de forma otimizada e comprimida
+
+# 3. Onde o Django vai PROCURAR arquivos no seu projeto
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+
+# 4. OS CAÇADORES DE ARQUIVOS (O Pulo do Gato)
+# Isso garante que ele procure na pasta acima E dentro do Jazzmin/Admin
+STATICFILES_FINDERS = [
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+]
+
+# 5. Armazenamento simplificado para evitar erros no Render
 STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
 
