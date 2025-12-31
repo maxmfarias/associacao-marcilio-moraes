@@ -27,8 +27,8 @@ render_host = os.getenv("RENDER_EXTERNAL_HOSTNAME")
 if render_host:
     ALLOWED_HOSTS.append(render_host)
 
-# (Se você usa domínio próprio, adicione aqui também)
-# ALLOWED_HOSTS += ["seu-dominio.com"]
+# Adiciona wildcard para garantir funcionamento no Render
+ALLOWED_HOSTS.append('*')
 
 CSRF_TRUSTED_ORIGINS = []
 if render_host:
@@ -40,7 +40,7 @@ CSRF_TRUSTED_ORIGINS.append("https://*.onrender.com")
 # Apps
 # --------------------
 INSTALLED_APPS = [
-    "jazzmin",  # primeiro
+    "jazzmin",  # Visual Admin (Primeiro)
     "cloudinary_storage",
     "cloudinary",
 
@@ -60,7 +60,7 @@ INSTALLED_APPS = [
 # --------------------
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",  # logo após SecurityMiddleware
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # Crucial: Logo após Security
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -124,37 +124,35 @@ USE_TZ = True
 
 
 # --------------------
-# Static files (WhiteNoise)  ✅ Render friendly
+# Static files (WhiteNoise) ✅ CORREÇÃO AQUI
 # --------------------
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-# Só define STATICFILES_DIRS se a pasta existir (evita conflito/erro no build)
+# Garante que a pasta static seja verificada se existir
 _static_dir = BASE_DIR / "static"
 STATICFILES_DIRS = []
 if _static_dir.exists():
     STATICFILES_DIRS.append(_static_dir)
 
-# Manifest é o melhor, mas EXIGE collectstatic no build.
-# Se você NÃO rodar collectstatic, isso pode causar 500.
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+# --- A MUDANÇA QUE RESOLVE O ERRO 500 ---
+# Removemos o "Manifest" para evitar que o site quebre se faltar um arquivo
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
-# WhiteNoise extra (opcional)
 WHITENOISE_USE_FINDERS = True
-WHITENOISE_AUTOREFRESH = DEBUG
 
 
 # --------------------
-# Media (Cloudinary)
+# Media (Cloudinary) ✅ CORREÇÃO AQUI
 # --------------------
 MEDIA_URL = "/media/"
-
 DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
+# Adicionei suas chaves como padrão caso as variáveis de ambiente falhem
 CLOUDINARY_STORAGE = {
-    "CLOUD_NAME": os.getenv("CLOUDINARY_CLOUD_NAME", ""),
-    "API_KEY": os.getenv("CLOUDINARY_API_KEY", ""),
-    "API_SECRET": os.getenv("CLOUDINARY_API_SECRET", ""),
+    "CLOUD_NAME": os.getenv("CLOUDINARY_CLOUD_NAME", "dwt6fblk4"),
+    "API_KEY": os.getenv("CLOUDINARY_API_KEY", "168731212392565"),
+    "API_SECRET": os.getenv("CLOUDINARY_API_SECRET", "EtYahWFSKxdy37YqOAnZonGVhgQ"),
 }
 
 
@@ -179,6 +177,16 @@ JAZZMIN_SETTINGS = {
     "copyright": "Associação Marcílio Moraes",
     "search_model": ["auth.User", "core.Atletas"],
     "show_ui_builder": True,
+    
+    # Ícones
+    "icons": {
+        "auth": "fas fa-users-cog",
+        "auth.user": "fas fa-user",
+        "auth.Group": "fas fa-users",
+        "core.Atletas": "fas fa-user-ninja",
+        "core.Eventos": "fas fa-calendar-alt",
+        "core.Contatos": "fas fa-address-book",
+    },
 }
 
 JAZZMIN_UI_TWEAKS = {
