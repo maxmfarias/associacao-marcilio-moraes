@@ -4,37 +4,60 @@ import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# =====================
-# SEGURANÇA
-# =====================
-SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-dev")
 
-DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
+# --------------------
+# Ambiente / Render
+# --------------------
+ON_RENDER = bool(os.getenv("RENDER")) or bool(os.getenv("RENDER_EXTERNAL_HOSTNAME"))
 
-ALLOWED_HOSTS = ["*"]
+SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-dev-only")
 
-CSRF_TRUSTED_ORIGINS = [
-    "https://*.onrender.com",
-]
+# No Render: DEBUG deve ser False (a menos que você force DEBUG=1)
+DEBUG = os.getenv("DEBUG", "0") == "1"
+if ON_RENDER:
+    DEBUG = False
 
-# =====================
-# APLICAÇÕES
-# =====================
+
+# --------------------
+# Hosts / CSRF
+# --------------------
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+
+render_host = os.getenv("RENDER_EXTERNAL_HOSTNAME")
+if render_host:
+    ALLOWED_HOSTS.append(render_host)
+
+# (Se você usa domínio próprio, adicione aqui também)
+# ALLOWED_HOSTS += ["seu-dominio.com"]
+
+CSRF_TRUSTED_ORIGINS = []
+if render_host:
+    CSRF_TRUSTED_ORIGINS.append(f"https://{render_host}")
+CSRF_TRUSTED_ORIGINS.append("https://*.onrender.com")
+
+
+# --------------------
+# Apps
+# --------------------
 INSTALLED_APPS = [
-    "jazzmin",  # SEMPRE PRIMEIRO
+    "jazzmin",  # primeiro
+    "cloudinary_storage",
     "cloudinary",
+
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+
     "core",
 ]
 
-# =====================
-# MIDDLEWARE
-# =====================
+
+# --------------------
+# Middleware
+# --------------------
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",  # logo após SecurityMiddleware
@@ -46,21 +69,14 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-# =====================
-# URLS / WSGI
-# =====================
+
 ROOT_URLCONF = "setup.urls"
 
-WSGI_APPLICATION = "setup.wsgi.application"
-
-# =====================
-# TEMPLATES
-# =====================
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [],
-        "APP_DIRS": True,  # NECESSÁRIO para Jazzmin
+        "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.debug",
@@ -72,20 +88,24 @@ TEMPLATES = [
     },
 ]
 
-# =====================
-# BANCO DE DADOS
-# =====================
+WSGI_APPLICATION = "setup.wsgi.application"
+
+
+# --------------------
+# Database
+# --------------------
 DATABASES = {
     "default": dj_database_url.config(
-        default="sqlite:///db.sqlite3",
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
         conn_max_age=600,
-        ssl_require=False,
+        ssl_require=ON_RENDER,
     )
 }
 
-# =====================
-# SENHAS
-# =====================
+
+# --------------------
+# Password validators
+# --------------------
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
@@ -93,49 +113,64 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-# =====================
-# LOCALIZAÇÃO
-# =====================
+
+# --------------------
+# Locale
+# --------------------
 LANGUAGE_CODE = "pt-br"
 TIME_ZONE = "America/Recife"
 USE_I18N = True
 USE_TZ = True
 
-# =====================
-# STATIC FILES (RENDER + JAZZMIN)
-# =====================
+
+# --------------------
+# Static files (WhiteNoise)  ✅ Render friendly
+# --------------------
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-# 👉 SÓ use isso se você realmente tiver uma pasta /static no projeto
-STATICFILES_DIRS = [BASE_DIR / "static"] if (BASE_DIR / "static").exists() else []
+# Só define STATICFILES_DIRS se a pasta existir (evita conflito/erro no build)
+_static_dir = BASE_DIR / "static"
+STATICFILES_DIRS = []
+if _static_dir.exists():
+    STATICFILES_DIRS.append(_static_dir)
 
-# =====================
-# STORAGES (Django moderno – evita conflito)
-# =====================
-STORAGES = {
-    "default": {
-        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
-    },
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-    },
-}
+# Manifest é o melhor, mas EXIGE collectstatic no build.
+# Se você NÃO rodar collectstatic, isso pode causar 500.
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-# =====================
-# MEDIA (Cloudinary)
-# =====================
+# WhiteNoise extra (opcional)
+WHITENOISE_USE_FINDERS = True
+WHITENOISE_AUTOREFRESH = DEBUG
+
+
+# --------------------
+# Media (Cloudinary)
+# --------------------
 MEDIA_URL = "/media/"
 
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+
 CLOUDINARY_STORAGE = {
-    "CLOUD_NAME": os.environ.get("CLOUDINARY_CLOUD_NAME"),
-    "API_KEY": os.environ.get("CLOUDINARY_API_KEY"),
-    "API_SECRET": os.environ.get("CLOUDINARY_API_SECRET"),
+    "CLOUD_NAME": os.getenv("CLOUDINARY_CLOUD_NAME", ""),
+    "API_KEY": os.getenv("CLOUDINARY_API_KEY", ""),
+    "API_SECRET": os.getenv("CLOUDINARY_API_SECRET", ""),
 }
 
-# =====================
-# JAZZMIN
-# =====================
+
+# --------------------
+# Security (produção)
+# --------------------
+if ON_RENDER:
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+
+
+# --------------------
+# Jazzmin
+# --------------------
 JAZZMIN_SETTINGS = {
     "site_title": "Marcílio Moraes",
     "site_header": "Gestão Judô",
@@ -151,7 +186,4 @@ JAZZMIN_UI_TWEAKS = {
     "dark_mode_theme": "darkly",
 }
 
-# =====================
-# PADRÃO
-# =====================
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
