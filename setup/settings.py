@@ -2,46 +2,31 @@ from pathlib import Path
 import os
 import dj_database_url
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # --- SEGURANÇA ---
-# Em produção (Render), a chave deve vir das variáveis de ambiente.
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-chave-padrao-desenvolvimento')
-
-# DEBUG: False em produção (se a variável RENDER existir), True localmente.
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-chave-dev')
 DEBUG = 'RENDER' not in os.environ
 
 ALLOWED_HOSTS = ['*']
-
-# IMPORTANTE PARA ONLINE: Permite o login via HTTPS no Render
 CSRF_TRUSTED_ORIGINS = ['https://*.onrender.com']
 
-# Application definition
-
 INSTALLED_APPS = [
-    # 1. JAZZMIN (Tem que ser o primeiro da lista!)
-    'jazzmin',
-
-    # 2. Apps do Cloudinary
+    'jazzmin', # 1º LUGAR
     'cloudinary_storage',
     'cloudinary',
-
-    # 3. Apps Padrão do Django
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
-    # 4. Seu app principal
     'core',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    "whitenoise.middleware.WhiteNoiseMiddleware", # O Whitenoise fica aqui
+    "whitenoise.middleware.WhiteNoiseMiddleware", # 2º LUGAR
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -56,7 +41,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [],
-        'APP_DIRS': True,
+        'APP_DIRS': True, # Isso permite achar templates do Jazzmin
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -70,8 +55,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'setup.wsgi.application'
 
-
-# --- BANCO DE DADOS ---
 DATABASES = {
     'default': dj_database_url.config(
         default='sqlite:///db.sqlite3',
@@ -79,45 +62,31 @@ DATABASES = {
     )
 }
 
-
-# --- VALIDAÇÃO DE SENHA ---
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-
-# --- INTERNACIONALIZAÇÃO ---
 LANGUAGE_CODE = 'pt-br'
 TIME_ZONE = 'America/Recife'
 USE_I18N = True
 USE_TZ = True
 
-
-# --- ARQUIVOS ESTÁTICOS (CSS, JS) ---
-# Aqui estava o problema. Esta é a versão simplificada que funciona.
-
+# --- ARQUIVOS ESTÁTICOS (CORREÇÃO FINAL) ---
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Configuração do WhiteNoise (Sem Manifest para evitar erros)
+# Onde colocar seus arquivos CSS customizados
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+
+# STORAGE SIMPLES (Evita erro 500 no Render)
 STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
-# OBS: Removi STATICFILES_DIRS e FINDERS.
-# Assim o Django usa o padrão automático e encontra o Jazzmin sozinho.
-
-
-# --- ARQUIVOS DE MÍDIA (FOTOS) ---
+# Mídia
 MEDIA_URL = '/media/'
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
@@ -127,28 +96,16 @@ CLOUDINARY_STORAGE = {
     'API_SECRET': 'EtYahWFSKxdy37YqOAnZonGVhgQ'
 }
 
-
-# --- CONFIGURAÇÃO JAZZMIN (Visual do Admin) ---
+# Jazzmin
 JAZZMIN_SETTINGS = {
-    "site_title": "Marcílio Moraes Admin",
+    "site_title": "Marcílio Moraes",
     "site_header": "Gestão Judô",
     "site_brand": "Marcílio Moraes",
-    "welcome_sign": "Painel Administrativo",
+    "welcome_sign": "Bem-vindo ao Painel",
     "copyright": "Associação Marcílio Moraes",
-    "search_model": ["auth.User", "core.Atletas"], 
-
-    "icons": {
-        "auth": "fas fa-users-cog",
-        "auth.user": "fas fa-user",
-        "auth.Group": "fas fa-users",
-        "core.Atletas": "fas fa-user-ninja",
-        "core.Eventos": "fas fa-calendar-alt",
-        "core.Contatos": "fas fa-address-book",
-    },
-    
+    "search_model": ["auth.User", "core.Atletas"],
     "show_ui_builder": True,
 }
-
 JAZZMIN_UI_TWEAKS = {
     "theme": "flatly",
     "dark_mode_theme": "darkly",

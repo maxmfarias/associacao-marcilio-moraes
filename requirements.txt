@@ -1,21 +1,11 @@
-# --- Django e Core ---
 Django
 gunicorn
 dj-database-url
 psycopg2-binary
 whitenoise
-asgiref
-sqlparse
-pytz
-
-# --- Visual (Admin) ---
 django-jazzmin
-
-# --- Mídia e Arquivos ---
 cloudinary
 django-cloudinary-storage
 Pillow
-
-# --- Utilitários do Projeto ---
 pycpfcnpj
 requests
