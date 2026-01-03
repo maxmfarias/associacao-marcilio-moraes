@@ -141,7 +141,7 @@ CLOUDINARY_STORAGE = {
     "API_SECRET": os.getenv("CLOUDINARY_API_SECRET", ""),
 }
 
-# --- CONFIGURAÇÃO VISUAL + SEGURANÇA ---
+# --- CONFIGURAÇÃO VISUAL + ROBUSTA ---
 STORAGES = {
     # Uploads -> Vão pro Cloudinary
     "default": {
@@ -157,7 +157,7 @@ STORAGES = {
 STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
-# Configurações extras do WhiteNoise
+# Configurações do WhiteNoise
 WHITENOISE_USE_FINDERS = True
 WHITENOISE_AUTOREFRESH = DEBUG
 WHITENOISE_MANIFEST_STRICT = False  # Garante que não quebra se faltar arquivo de mapa
