@@ -38,7 +38,7 @@ CSRF_TRUSTED_ORIGINS.append("https://*.onrender.com")
 # --------------------
 INSTALLED_APPS = [
     "jazzmin",  # Admin Theme (Primeiro)
-    "cloudinary_storage", # Cloudinary Storage (Antes de staticfiles/cloudinary)
+    "cloudinary_storage", # Cloudinary Storage
     "cloudinary",
 
     "django.contrib.admin",
@@ -57,7 +57,7 @@ INSTALLED_APPS = [
 # --------------------
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",  # Essencial para arquivos estáticos no Render
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # O Middleware continua aqui para servir os arquivos
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -121,7 +121,7 @@ USE_TZ = True
 
 
 # --------------------
-# ARQUIVOS ESTÁTICOS E MÍDIA (A PARTE CRÍTICA)
+# ARQUIVOS ESTÁTICOS E MÍDIA
 # --------------------
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
@@ -134,32 +134,31 @@ if _static_dir.exists():
 
 MEDIA_URL = "/media/"
 
-# Credenciais do Cloudinary (Lidas do Render Environment)
+# Credenciais do Cloudinary
 CLOUDINARY_STORAGE = {
     "CLOUD_NAME": os.getenv("CLOUDINARY_CLOUD_NAME", ""),
     "API_KEY": os.getenv("CLOUDINARY_API_KEY", ""),
     "API_SECRET": os.getenv("CLOUDINARY_API_SECRET", ""),
 }
 
-# --- CONFIGURAÇÃO NOVA (DJANGO 4.2+) ---
+# --- MODO DE SEGURANÇA (PARA CORRIGIR O ERRO DE BUILD) ---
 STORAGES = {
-    # "default": Cuida dos Uploads (Atletas, Senseis) -> Vai pro Cloudinary
+    # Uploads -> Vão pro Cloudinary (Isso não muda)
     "default": {
         "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
     },
-    # "staticfiles": MUDAMOS AQUI! Usamos a versão "Simples" (Compressed) sem Manifest
+    # Estáticos -> Usamos o padrão do Django (Sem compressão do WhiteNoise)
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
     },
 }
 
 # --- COMPATIBILIDADE ---
-# MUDAMOS AQUI TAMBÉM! Tem que ser igual ao de cima
-STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+# Tem que bater com a configuração acima
+STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
 DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
-# WhiteNoise: Configs extras
-WHITENOISE_USE_FINDERS = True
+# Configurações extras
 WHITENOISE_AUTOREFRESH = DEBUG
 
 
