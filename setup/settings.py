@@ -147,24 +147,20 @@ STORAGES = {
     "default": {
         "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
     },
-    # "staticfiles": Cuida do CSS/JS do site -> Vai pro WhiteNoise
+    # "staticfiles": MUDAMOS AQUI! Usamos a versão "Simples" (Compressed) sem Manifest
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
     },
 }
 
 # --- COMPATIBILIDADE ---
-# O django-cloudinary-storage ainda busca essas variáveis antigas durante o collectstatic
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+# MUDAMOS AQUI TAMBÉM! Tem que ser igual ao de cima
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
 # WhiteNoise: Configs extras
 WHITENOISE_USE_FINDERS = True
 WHITENOISE_AUTOREFRESH = DEBUG
-
-# --- CORREÇÃO DO ERRO "MISSING FILE" ---
-# Isso impede que o deploy falhe se faltar um arquivo .map do bootstrap
-WHITENOISE_MANIFEST_STRICT = False
 
 
 # --------------------
