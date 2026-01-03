@@ -142,7 +142,6 @@ CLOUDINARY_STORAGE = {
 }
 
 # --- CONFIGURAÇÃO NOVA (DJANGO 4.2+) ---
-# Aqui definimos quem cuida do que.
 STORAGES = {
     # "default": Cuida dos Uploads (Atletas, Senseis) -> Vai pro Cloudinary
     "default": {
@@ -153,6 +152,12 @@ STORAGES = {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
+
+# --- COMPATIBILIDADE (ADICIONADO PARA CORRIGIR O ERRO DO BUILD) ---
+# O django-cloudinary-storage ainda busca essas variáveis antigas durante o collectstatic
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+
 # WhiteNoise: Configs extras
 WHITENOISE_USE_FINDERS = True
 WHITENOISE_AUTOREFRESH = DEBUG
