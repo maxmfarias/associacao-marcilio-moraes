@@ -12,7 +12,7 @@ ON_RENDER = bool(os.getenv("RENDER")) or bool(os.getenv("RENDER_EXTERNAL_HOSTNAM
 
 SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-dev-only")
 
-# No Render: DEBUG deve ser False (a menos que você force DEBUG=1)
+# No Render: DEBUG deve ser False
 DEBUG = os.getenv("DEBUG", "0") == "1"
 if ON_RENDER:
     DEBUG = False
@@ -27,9 +27,6 @@ render_host = os.getenv("RENDER_EXTERNAL_HOSTNAME")
 if render_host:
     ALLOWED_HOSTS.append(render_host)
 
-# (Se você usa domínio próprio, adicione aqui também)
-# ALLOWED_HOSTS += ["seu-dominio.com"]
-
 CSRF_TRUSTED_ORIGINS = []
 if render_host:
     CSRF_TRUSTED_ORIGINS.append(f"https://{render_host}")
@@ -40,8 +37,8 @@ CSRF_TRUSTED_ORIGINS.append("https://*.onrender.com")
 # Apps
 # --------------------
 INSTALLED_APPS = [
-    "jazzmin",  # primeiro
-    "cloudinary_storage",
+    "jazzmin",  # Admin Theme (Primeiro)
+    "cloudinary_storage", # Cloudinary Storage (Antes de staticfiles/cloudinary)
     "cloudinary",
 
     "django.contrib.admin",
@@ -51,7 +48,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
-    "core",
+    "core", # Seu app
 ]
 
 
@@ -60,7 +57,7 @@ INSTALLED_APPS = [
 # --------------------
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",  # logo após SecurityMiddleware
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # Essencial para arquivos estáticos no Render
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -124,40 +121,45 @@ USE_TZ = True
 
 
 # --------------------
-# Static files (WhiteNoise)  ✅ Render friendly
+# ARQUIVOS ESTÁTICOS E MÍDIA (A PARTE CRÍTICA)
 # --------------------
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-# Só define STATICFILES_DIRS se a pasta existir (evita conflito/erro no build)
+# Define pastas de estáticos extras se existirem
 _static_dir = BASE_DIR / "static"
 STATICFILES_DIRS = []
 if _static_dir.exists():
     STATICFILES_DIRS.append(_static_dir)
 
-# Manifest é o melhor, mas EXIGE collectstatic no build.
-# Se você NÃO rodar collectstatic, isso pode causar 500.
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-
-# WhiteNoise extra (opcional)
-WHITENOISE_USE_FINDERS = True
-WHITENOISE_AUTOREFRESH = DEBUG
-
-
-# --------------------
-# Media (Cloudinary)
-# --------------------
 MEDIA_URL = "/media/"
 
+# Credenciais do Cloudinary (Lidas do Render Environment)
 CLOUDINARY_STORAGE = {
     "CLOUD_NAME": os.getenv("CLOUDINARY_CLOUD_NAME", ""),
     "API_KEY": os.getenv("CLOUDINARY_API_KEY", ""),
     "API_SECRET": os.getenv("CLOUDINARY_API_SECRET", ""),
 }
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+# --- CONFIGURAÇÃO NOVA (DJANGO 4.2+) ---
+# Aqui definimos quem cuida do que.
+STORAGES = {
+    # "default": Cuida dos Uploads (Atletas, Senseis) -> Vai pro Cloudinary
+    "default": {
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+    },
+    # "staticfiles": Cuida do CSS/JS do site -> Vai pro WhiteNoise
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+# WhiteNoise: Configs extras
+WHITENOISE_USE_FINDERS = True
+WHITENOISE_AUTOREFRESH = DEBUG
+
 
 # --------------------
-# Security (produção)
+# Security (Produção)
 # --------------------
 if ON_RENDER:
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
@@ -167,7 +169,7 @@ if ON_RENDER:
 
 
 # --------------------
-# Jazzmin
+# Jazzmin (Tema do Admin)
 # --------------------
 JAZZMIN_SETTINGS = {
     "site_title": "Marcílio Moraes",
