@@ -1,11 +1,19 @@
+# Framework e Admin
 Django
-gunicorn
-dj-database-url
-psycopg2-binary
-whitenoise
 django-jazzmin
+
+# Servidor e Banco de Dados (Render)
+gunicorn
+psycopg2-binary
+dj-database-url
+
+# Arquivos Estáticos e Mídia (Cloudinary)
+whitenoise
 cloudinary
 django-cloudinary-storage
 Pillow
-pycpfcnpj
+
+# Utilitários (que estavam na sua lista e parecem úteis pro projeto)
 requests
+pycpfcnpj
+python-dateutil
