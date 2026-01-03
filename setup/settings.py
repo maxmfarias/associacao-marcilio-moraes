@@ -153,7 +153,7 @@ STORAGES = {
     },
 }
 
-# --- COMPATIBILIDADE (ADICIONADO PARA CORRIGIR O ERRO DO BUILD) ---
+# --- COMPATIBILIDADE ---
 # O django-cloudinary-storage ainda busca essas variáveis antigas durante o collectstatic
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
@@ -161,6 +161,10 @@ DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 # WhiteNoise: Configs extras
 WHITENOISE_USE_FINDERS = True
 WHITENOISE_AUTOREFRESH = DEBUG
+
+# --- CORREÇÃO DO ERRO "MISSING FILE" ---
+# Isso impede que o deploy falhe se faltar um arquivo .map do bootstrap
+WHITENOISE_MANIFEST_STRICT = False
 
 
 # --------------------
