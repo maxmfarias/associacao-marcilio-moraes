@@ -57,7 +57,7 @@ INSTALLED_APPS = [
 # --------------------
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",  # O Middleware continua aqui para servir os arquivos
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # Essencial para arquivos estáticos no Render
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -141,25 +141,26 @@ CLOUDINARY_STORAGE = {
     "API_SECRET": os.getenv("CLOUDINARY_API_SECRET", ""),
 }
 
-# --- MODO DE SEGURANÇA (PARA CORRIGIR O ERRO DE BUILD) ---
+# --- CONFIGURAÇÃO VISUAL + SEGURANÇA ---
 STORAGES = {
-    # Uploads -> Vão pro Cloudinary (Isso não muda)
+    # Uploads -> Vão pro Cloudinary
     "default": {
         "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
     },
-    # Estáticos -> Usamos o padrão do Django (Sem compressão do WhiteNoise)
+    # Estáticos -> WhiteNoise "Compressed" (Visual bonito + Sem erro de mapa)
     "staticfiles": {
-        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
     },
 }
 
 # --- COMPATIBILIDADE ---
-# Tem que bater com a configuração acima
-STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
-# Configurações extras
+# Configurações extras do WhiteNoise
+WHITENOISE_USE_FINDERS = True
 WHITENOISE_AUTOREFRESH = DEBUG
+WHITENOISE_MANIFEST_STRICT = False  # Garante que não quebra se faltar arquivo de mapa
 
 
 # --------------------
