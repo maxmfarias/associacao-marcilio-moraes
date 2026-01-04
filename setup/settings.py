@@ -1,7 +1,6 @@
 from pathlib import Path
 import os
 import dj_database_url
-import sys
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -12,19 +11,35 @@ ON_RENDER = bool(os.getenv("RENDER")) or bool(os.getenv("RENDER_EXTERNAL_HOSTNAM
 
 SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-dev-only")
 
-# --- MODO DE DEBUG FORÇADO (Para descobrirmos o erro) ---
-# Depois que resolvermos, você volta para False.
-DEBUG = True 
+# ✅ VOLTAMOS PARA A SEGURANÇA PADRÃO
+# No Render, isso vai ser False automaticamente.
+DEBUG = os.getenv("DEBUG", "0") == "1"
+if ON_RENDER:
+    DEBUG = False
 
-ALLOWED_HOSTS = ["*"] # Liberando tudo temporariamente para evitar erro de host
+# --------------------
+# Hosts / CSRF
+# --------------------
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+
+render_host = os.getenv("RENDER_EXTERNAL_HOSTNAME")
+if render_host:
+    ALLOWED_HOSTS.append(render_host)
+
+# (Se tiver domínio próprio, adicione aqui: ALLOWED_HOSTS.append("seusite.com"))
+
+CSRF_TRUSTED_ORIGINS = []
+if render_host:
+    CSRF_TRUSTED_ORIGINS.append(f"https://{render_host}")
+    CSRF_TRUSTED_ORIGINS.append("https://*.onrender.com")
 
 # --------------------
 # Apps
 # --------------------
 INSTALLED_APPS = [
     "jazzmin",
-    "cloudinary_storage", # Deve estar ANTES do staticfiles
-    "django.contrib.staticfiles", # Deve estar DEPOIS do cloudinary_storage
+    "cloudinary_storage", # Deve vir antes de staticfiles
+    "django.contrib.staticfiles",
     "cloudinary",
 
     "django.contrib.admin",
@@ -103,23 +118,34 @@ STATICFILES_DIRS = []
 if _static_dir.exists():
     STATICFILES_DIRS.append(_static_dir)
 
-# Essa configuração é OBRIGATÓRIA para o whitenoise funcionar sem o erro "AttributeError"
+# Mantendo a configuração explícita que funcionou
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+# Whitenoise extra
+WHITENOISE_USE_FINDERS = True
+WHITENOISE_AUTOREFRESH = DEBUG
 
 # --------------------
 # UPLOAD DE MÍDIA (FOTOS)
 # --------------------
 MEDIA_URL = "/media/"
 
-# Configuração do Cloudinary
 CLOUDINARY_STORAGE = {
     "CLOUD_NAME": os.getenv("CLOUDINARY_CLOUD_NAME"),
     "API_KEY": os.getenv("CLOUDINARY_API_KEY"),
     "API_SECRET": os.getenv("CLOUDINARY_API_SECRET"),
 }
 
-# Essa configuração diz pro Django salvar os uploads na nuvem
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+# --------------------
+# Security (Produção)
+# --------------------
+if ON_RENDER:
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
 
 # --------------------
 # Configurações Finais
@@ -132,4 +158,11 @@ JAZZMIN_SETTINGS = {
     "site_brand": "Painel",
     "welcome_sign": "Bem-vindo",
     "copyright": "Associação Marcílio Moraes",
+    "search_model": ["auth.User", "core.Atletas"],
+    "show_ui_builder": True,
+}
+
+JAZZMIN_UI_TWEAKS = {
+    "theme": "flatly",
+    "dark_mode_theme": "darkly",
 }
