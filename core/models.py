@@ -1,11 +1,15 @@
 from django.db import models
 from datetime import date
+from cloudinary_storage.storage import MediaCloudinaryStorage
 
 class Sensei(models.Model):
     nome = models.CharField(max_length=100)
     cargo = models.CharField(max_length=100, help_text="Ex: Mestre Principal, Instrutor")
     graduacao = models.CharField(max_length=100, help_text="Ex: Kodansha 6º Dan")
-    foto = models.ImageField(upload_to='senseis/')
+    
+    # ✅ Alterado: Adicionado storage=MediaCloudinaryStorage()
+    foto = models.ImageField(upload_to='senseis/', storage=MediaCloudinaryStorage())
+    
     biografia = models.TextField()
     anos_experiencia = models.IntegerField(default=0)
     # Para as tags (ex: "Competição, Newaza"), vamos usar um texto simples separado por vírgula
@@ -16,7 +20,10 @@ class Sensei(models.Model):
 
 class Atleta(models.Model):
     nome = models.CharField(max_length=100)
-    foto = models.ImageField(upload_to='atletas/', blank=True, null=True)
+    
+    # ✅ Alterado: Adicionado storage=MediaCloudinaryStorage()
+    foto = models.ImageField(upload_to='atletas/', storage=MediaCloudinaryStorage(), blank=True, null=True)
+    
     destaque = models.BooleanField(default=False, help_text="Se marcado, aparece no carrossel principal.")
     
     # --- MUDANÇA AQUI: Trocamos 'idade' fixa por Data de Nascimento ---
@@ -56,7 +63,10 @@ class Evento(models.Model):
     horario_fim = models.TimeField()
     local = models.CharField(max_length=200)
     descricao = models.TextField()
-    imagem_capa = models.ImageField(upload_to='eventos/', blank=True, null=True)
+    
+    # ✅ Alterado: Adicionado storage=MediaCloudinaryStorage()
+    imagem_capa = models.ImageField(upload_to='eventos/', storage=MediaCloudinaryStorage(), blank=True, null=True)
+    
     link_info = models.URLField(blank=True, null=True, help_text="Link para 'Saiba mais'")
 
     class Meta:
