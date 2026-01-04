@@ -338,15 +338,12 @@
                             <div><p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Peso</p><p class="text-gray-800 dark:text-gray-200 font-semibold">{{ atleta.peso }}</p></div>
                             <div><p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Categoria</p><p class="text-gray-800 dark:text-gray-200 font-semibold">{{ atleta.categoria }}</p></div>
                             
-                        <div>
-                            <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Graduação</p>
-                            <div class="flex items-center gap-2">
-                                <div class="w-5 h-5 rounded border border-gray-400 shadow-sm" 
-                                    style="background: {{ atleta.css_faixa }};"></div>
-                                
-                                <p class="font-semibold" style="color: {{ atleta.cor_texto }};">
-                                    {{ atleta.graduacao }}
-                                </p>
+                            <div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Graduação</p>
+                                <div class="flex items-center gap-2">
+                                    <div class="w-5 h-5 rounded border border-gray-400 shadow-sm" style="background: {{ atleta.css_faixa }};"></div>
+                                    <p class="font-semibold" style="color: {{ atleta.cor_texto }};">{{ atleta.graduacao }}</p>
+                                </div>
                             </div>
                         </div>
                        
@@ -390,14 +387,10 @@
                         <div class="col-span-2">
                             <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Graduação</p>
                             <div class="flex items-center gap-2">
-                                <div class="w-4 h-4 rounded border border-gray-400 shadow-sm" 
-                                    style="background: {{ atleta.css_faixa }};"></div>
-                                    
-                                <p class="text-sm font-semibold" style="color: {{ atleta.cor_texto }};">
-                                    {{ atleta.graduacao }}
-                                </p>
+                                <div class="w-4 h-4 rounded border border-gray-400 shadow-sm" style="background: {{ atleta.css_faixa }};"></div>
+                                <p class="text-sm font-semibold" style="color: {{ atleta.cor_texto }};">{{ atleta.graduacao }}</p>
                             </div>
-
+                        </div>
                     </div>
                     <div class="border-t border-gray-200 dark:border-gray-600 pt-3">
                         <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">Conquistas:</p>
