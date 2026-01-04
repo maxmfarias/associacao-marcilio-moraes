@@ -1,6 +1,7 @@
 from pathlib import Path
 import os
 import dj_database_url
+import sys  # Importado aqui para o Debug no final
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -126,15 +127,13 @@ STATICFILES_DIRS = []
 if _static_dir.exists():
     STATICFILES_DIRS.append(_static_dir)
 
-#Mudanças do cloudinary
-# 1. Arquivos Estáticos (CSS/JS) ficam no Render/WhiteNoise
+# --- CORREÇÃO AQUI: Voltamos para o formato explícito ---
+# Isso resolve o erro "AttributeError: ... has no attribute 'STATICFILES_STORAGE'"
+
+# 1. Armazenamento de Estáticos (CSS/JS) via WhiteNoise
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-# 2. Arquivos de Mídia (Fotos) vão para o Cloudinary
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-
-
-# WhiteNoise extra (opcional)
+# 2. WhiteNoise extra
 WHITENOISE_USE_FINDERS = True
 WHITENOISE_AUTOREFRESH = DEBUG
 
@@ -148,6 +147,9 @@ CLOUDINARY_STORAGE = {
     "API_KEY": os.getenv("CLOUDINARY_API_KEY", ""),
     "API_SECRET": os.getenv("CLOUDINARY_API_SECRET", ""),
 }
+
+# 3. Armazenamento de Mídia (Uploads) via Cloudinary
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 
 # --------------------
@@ -180,7 +182,6 @@ JAZZMIN_UI_TWEAKS = {
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # --- DEBUG (Para vermos no Log do Render se as chaves estão chegando) ---
-import sys
 if ON_RENDER:
     print("--- DEBUG CLOUDINARY ---", file=sys.stderr)
     print(f"Cloud Name está configurado? {'SIM' if os.getenv('CLOUDINARY_CLOUD_NAME') else 'NÃO'}", file=sys.stderr)
