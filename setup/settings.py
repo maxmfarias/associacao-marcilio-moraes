@@ -145,6 +145,9 @@ CLOUDINARY_STORAGE = {
     "API_SECRET": os.getenv("CLOUDINARY_API_SECRET", ""),
 }
 
+# ✅ CONFIGURAÇÃO ADICIONADA: Diz ao Django para usar o Cloudinary para uploads
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
 # --------------------
 # Security (produção)
 # --------------------
