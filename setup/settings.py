@@ -127,14 +127,12 @@ if _static_dir.exists():
     STATICFILES_DIRS.append(_static_dir)
 
 #Mudanças do cloudinary
-STORAGES = {
-    "default": {
-        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
-    },
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-    },
-}
+# 1. Arquivos Estáticos (CSS/JS) ficam no Render/WhiteNoise
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+# 2. Arquivos de Mídia (Fotos) vão para o Cloudinary
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
 
 # WhiteNoise extra (opcional)
 WHITENOISE_USE_FINDERS = True
