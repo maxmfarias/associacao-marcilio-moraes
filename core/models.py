@@ -50,51 +50,61 @@ class Atleta(models.Model):
         return self.nome
     
     #Adicionando cor das faixas
+    def _get_cores_detectadas(self):
+        """Método auxiliar para achar as cores no texto da graduação."""
+        texto = self.graduacao.lower()
+        
+        # Mapa de cores
+        mapa_cores = {
+            'branca': '#F5F5F5', # Branco gelo
+            'cinza': '#BEBEBE',
+            'azul': '#007bff',
+            'amarela': '#FFD700',
+            'laranja': '#FFA500',
+            'verde': '#28a745',
+            'roxa': '#800080',
+            'marrom': '#8B4513',
+            'preta': '#000000',
+            'vermelha': '#dc3545',
+            'coral': '#FF7F50',
+        }
+        
+        cores_encontradas = []
+        # Procura as cores na ordem em que aparecem no texto da graduação
+        # Ex: "Faixa Azul/Amarela" -> vai achar azul primeiro, depois amarela
+        for nome_cor, hex_code in mapa_cores.items():
+            if nome_cor in texto:
+                # Armazena a posição onde a cor foi achada para ordenar corretamente
+                index = texto.find(nome_cor)
+                cores_encontradas.append((index, hex_code))
+        
+        # Ordena pelo índice de aparição (quem aparece primeiro no nome ganha)
+        cores_encontradas.sort(key=lambda x: x[0])
+        
+        return [c[1] for c in cores_encontradas]
+
     @property
-    def cor_faixa(self):
-        """Retorna o código HEX da cor baseado no texto da graduação."""
-        texto = self.graduacao.lower() # Converte para minúsculo para facilitar a busca
+    def css_faixa(self):
+        """Retorna o CSS para o FUNDO do quadradinho (suporta degradê)."""
+        cores = self._get_cores_detectadas()
         
-        # Dicionário de cores (Você pode ajustar os tons HEX como quiser)
-        if 'branca' in texto: return '#FFFFFF'
-        if 'cinza' in texto: return '#BEBEBE'
-        if 'azul' in texto: return '#007bff' # Azul Bootstrap
-        if 'amarela' in texto: return '#FFD700'
-        if 'laranja' in texto: return '#FFA500'
-        if 'verde' in texto: return '#28a745' # Verde Bootstrap
-        if 'roxa' in texto: return '#800080'
-        if 'marrom' in texto: return '#8B4513' # SaddleBrown
-        if 'preta' in texto: return '#000000'
-        if 'coral' in texto: return '#FF7F50'
-        if 'vermelha' in texto: return '#dc3545' # Vermelho Bootstrap
-        
-        return '#ddd' # Cinza claro padrão se não achar nenhuma cor
+        if not cores:
+            return '#ddd' # Padrão cinza se não achar nada
+            
+        if len(cores) >= 2:
+            # Cria um gradiente dividido exatamente no meio (50%/50%)
+            # Ex: Azul na esquerda, Amarela na direita
+            return f"linear-gradient(135deg, {cores[0]} 50%, {cores[1]} 50%)"
+            
+        return cores[0] # Cor sólida
 
-class Evento(models.Model):
-    TIPO_CHOICES = [
-        ('competicao', 'Competição'),
-        ('seminario', 'Seminário'),
-        ('interno', 'Interno'),
-    ]
-    
-    titulo = models.CharField(max_length=100)
-    tipo = models.CharField(max_length=20, choices=TIPO_CHOICES)
-    data = models.DateField()
-    horario_inicio = models.TimeField()
-    horario_fim = models.TimeField()
-    local = models.CharField(max_length=200)
-    descricao = models.TextField()
-    
-    # ✅ Alterado: Adicionado storage=MediaCloudinaryStorage()
-    imagem_capa = models.ImageField(upload_to='eventos/', storage=MediaCloudinaryStorage(), blank=True, null=True)
-    
-    link_info = models.URLField(blank=True, null=True, help_text="Link para 'Saiba mais'")
-
-    class Meta:
-        ordering = ['data'] # Ordena sempre pelo mais próximo
-
-    def __str__(self):
-        return f"{self.titulo} - {self.data}"
+    @property
+    def cor_texto(self):
+        """Retorna uma cor sólida para o TEXTO (pega a primeira cor da faixa)."""
+        cores = self._get_cores_detectadas()
+        if cores:
+            return cores[0]
+        return '#666'
 
 class Contato(models.Model):
     nome = models.CharField(max_length=100)
