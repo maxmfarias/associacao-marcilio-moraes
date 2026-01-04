@@ -1,7 +1,7 @@
 from pathlib import Path
 import os
 import dj_database_url
-import sys  # Importado aqui para o Debug no final
+import sys
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -12,34 +12,19 @@ ON_RENDER = bool(os.getenv("RENDER")) or bool(os.getenv("RENDER_EXTERNAL_HOSTNAM
 
 SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-dev-only")
 
-# No Render: DEBUG deve ser False (a menos que você force DEBUG=1)
-DEBUG = os.getenv("DEBUG", "0") == "1"
-# if ON_RENDER:
-#     DEBUG = False
+# --- MODO DE DEBUG FORÇADO (Para descobrirmos o erro) ---
+# Depois que resolvermos, você volta para False.
+DEBUG = True 
 
-# --------------------
-# Hosts / CSRF
-# --------------------
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
-
-render_host = os.getenv("RENDER_EXTERNAL_HOSTNAME")
-if render_host:
-    ALLOWED_HOSTS.append(render_host)
-
-# (Se você usa domínio próprio, adicione aqui também)
-# ALLOWED_HOSTS += ["seu-dominio.com"]
-
-CSRF_TRUSTED_ORIGINS = []
-if render_host:
-    CSRF_TRUSTED_ORIGINS.append(f"https://{render_host}")
-    CSRF_TRUSTED_ORIGINS.append("https://*.onrender.com")
+ALLOWED_HOSTS = ["*"] # Liberando tudo temporariamente para evitar erro de host
 
 # --------------------
 # Apps
 # --------------------
 INSTALLED_APPS = [
-    "jazzmin",  # primeiro
-    "cloudinary_storage",
+    "jazzmin",
+    "cloudinary_storage", # Deve estar ANTES do staticfiles
+    "django.contrib.staticfiles", # Deve estar DEPOIS do cloudinary_storage
     "cloudinary",
 
     "django.contrib.admin",
@@ -47,17 +32,12 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
-    "django.contrib.staticfiles",
-
     "core",
 ]
 
-# --------------------
-# Middleware
-# --------------------
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",  # logo após SecurityMiddleware
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -107,83 +87,49 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-# --------------------
-# Locale
-# --------------------
 LANGUAGE_CODE = "pt-br"
 TIME_ZONE = "America/Recife"
 USE_I18N = True
 USE_TZ = True
 
 # --------------------
-# Static files (WhiteNoise) ✅ Render friendly
+# ARQUIVOS ESTÁTICOS (CSS, JS)
 # --------------------
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-# Só define STATICFILES_DIRS se a pasta existir (evita conflito/erro no build)
 _static_dir = BASE_DIR / "static"
 STATICFILES_DIRS = []
 if _static_dir.exists():
     STATICFILES_DIRS.append(_static_dir)
 
-# --- CORREÇÃO AQUI: Voltamos para o formato explícito ---
-# Isso resolve o erro "AttributeError: ... has no attribute 'STATICFILES_STORAGE'"
-
-# 1. Armazenamento de Estáticos (CSS/JS) via WhiteNoise
+# Essa configuração é OBRIGATÓRIA para o whitenoise funcionar sem o erro "AttributeError"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-# 2. WhiteNoise extra
-WHITENOISE_USE_FINDERS = True
-WHITENOISE_AUTOREFRESH = DEBUG
-
 # --------------------
-# Media (Cloudinary)
+# UPLOAD DE MÍDIA (FOTOS)
 # --------------------
 MEDIA_URL = "/media/"
 
+# Configuração do Cloudinary
 CLOUDINARY_STORAGE = {
-    "CLOUD_NAME": os.getenv("CLOUDINARY_CLOUD_NAME", ""),
-    "API_KEY": os.getenv("CLOUDINARY_API_KEY", ""),
-    "API_SECRET": os.getenv("CLOUDINARY_API_SECRET", ""),
+    "CLOUD_NAME": os.getenv("CLOUDINARY_CLOUD_NAME"),
+    "API_KEY": os.getenv("CLOUDINARY_API_KEY"),
+    "API_SECRET": os.getenv("CLOUDINARY_API_SECRET"),
 }
 
-# 3. Armazenamento de Mídia (Uploads) via Cloudinary
+# Essa configuração diz pro Django salvar os uploads na nuvem
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
-
 # --------------------
-# Security (produção)
+# Configurações Finais
 # --------------------
-if ON_RENDER:
-    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-    SECURE_SSL_REDIRECT = True
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
-
-# --------------------
-# Jazzmin
-# --------------------
-JAZZMIN_SETTINGS = {
-    "site_title": "Marcílio Moraes",
-    "site_header": "Gestão Judô",
-    "site_brand": "Marcílio Moraes",
-    "welcome_sign": "Bem-vindo ao Painel",
-    "copyright": "Associação Marcílio Moraes",
-    "search_model": ["auth.User", "core.Atletas"],
-    "show_ui_builder": True,
-}
-
-JAZZMIN_UI_TWEAKS = {
-    "theme": "flatly",
-    "dark_mode_theme": "darkly",
-}
-
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# --- DEBUG (Para vermos no Log do Render se as chaves estão chegando) ---
-if ON_RENDER:
-    print("--- DEBUG CLOUDINARY ---", file=sys.stderr)
-    print(f"Cloud Name está configurado? {'SIM' if os.getenv('CLOUDINARY_CLOUD_NAME') else 'NÃO'}", file=sys.stderr)
-    print(f"API Key está configurada? {'SIM' if os.getenv('CLOUDINARY_API_KEY') else 'NÃO'}", file=sys.stderr)
-    print("------------------------", file=sys.stderr)
+JAZZMIN_SETTINGS = {
+    "site_title": "Gestão Judô",
+    "site_header": "Gestão Judô",
+    "site_brand": "Painel",
+    "welcome_sign": "Bem-vindo",
+    "copyright": "Associação Marcílio Moraes",
+}
