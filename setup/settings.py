@@ -180,3 +180,11 @@ JAZZMIN_UI_TWEAKS = {
 }
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# --- DEBUG (Para vermos no Log do Render se as chaves estão chegando) ---
+import sys
+if ON_RENDER:
+    print("--- DEBUG CLOUDINARY ---", file=sys.stderr)
+    print(f"Cloud Name está configurado? {'SIM' if os.getenv('CLOUDINARY_CLOUD_NAME') else 'NÃO'}", file=sys.stderr)
+    print(f"API Key está configurada? {'SIM' if os.getenv('CLOUDINARY_API_KEY') else 'NÃO'}", file=sys.stderr)
+    print("------------------------", file=sys.stderr)
