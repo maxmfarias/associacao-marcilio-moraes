@@ -14,8 +14,8 @@ SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-dev-only")
 
 # No Render: DEBUG deve ser False (a menos que você force DEBUG=1)
 DEBUG = os.getenv("DEBUG", "0") == "1"
-if ON_RENDER:
-    DEBUG = False
+# if ON_RENDER:
+#     DEBUG = False
 
 # --------------------
 # Hosts / CSRF
