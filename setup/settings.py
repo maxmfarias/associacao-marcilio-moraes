@@ -126,9 +126,15 @@ STATICFILES_DIRS = []
 if _static_dir.exists():
     STATICFILES_DIRS.append(_static_dir)
 
-# Manifest é o melhor, mas EXIGE collectstatic no build.
-# Se você NÃO rodar collectstatic, isso pode causar 500.
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+#Mudanças do cloudinary
+STORAGES = {
+    "default": {
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 # WhiteNoise extra (opcional)
 WHITENOISE_USE_FINDERS = True
@@ -145,8 +151,6 @@ CLOUDINARY_STORAGE = {
     "API_SECRET": os.getenv("CLOUDINARY_API_SECRET", ""),
 }
 
-# ✅ CONFIGURAÇÃO ADICIONADA: Diz ao Django para usar o Cloudinary para uploads
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # --------------------
 # Security (produção)
