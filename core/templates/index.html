@@ -314,7 +314,7 @@
                         <div class="flex items-start justify-between mb-6">
                             <div class="flex items-center gap-4">
                                 <div class="bg-[#E85D4A]/10 w-20 h-20 rounded-full flex items-center justify-center overflow-hidden">
-                                     {% if atleta.foto %}""
+                                     {% if atleta.foto %}
                                         <img src="{{ atleta.foto.url }}" class="w-full h-full object-cover">
                                      {% else %}
                                         <i data-lucide="user" class="w-8 h-8 text-[#E85D4A]"></i>
@@ -337,7 +337,14 @@
                             </div>
                             <div><p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Peso</p><p class="text-gray-800 dark:text-gray-200 font-semibold">{{ atleta.peso }}</p></div>
                             <div><p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Categoria</p><p class="text-gray-800 dark:text-gray-200 font-semibold">{{ atleta.categoria }}</p></div>
-                            <div><p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Graduação</p><p class="text-[#E85D4A] font-semibold">{{ atleta.graduacao }}</p></div>
+                            
+                            <div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Graduação</p>
+                                <div class="flex items-center gap-2">
+                                    <div class="w-4 h-4 rounded border border-gray-400 shadow-sm" style="background-color: {{ atleta.cor_faixa }};"></div>
+                                    <p class="font-semibold" style="color: {{ atleta.cor_faixa }};">{{ atleta.graduacao }}</p>
+                                </div>
+                            </div>
                         </div>
                        
                         <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
@@ -376,7 +383,14 @@
                             </p>
                         </div>
                         <div><p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Peso</p><p class="text-sm text-gray-800 dark:text-gray-200 font-semibold">{{ atleta.peso }}</p></div>
-                        <div class="col-span-2"><p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Graduação</p><p class="text-sm text-[#E85D4A] font-semibold">{{ atleta.graduacao }}</p></div>
+                        
+                        <div class="col-span-2">
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Graduação</p>
+                            <div class="flex items-center gap-2">
+                                <div class="w-4 h-4 rounded border border-gray-400 shadow-sm" style="background-color: {{ atleta.cor_faixa }};"></div>
+                                <p class="text-sm font-semibold" style="color: {{ atleta.cor_faixa }};">{{ atleta.graduacao }}</p>
+                            </div>
+                        </div>
                     </div>
                     <div class="border-t border-gray-200 dark:border-gray-600 pt-3">
                         <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">Conquistas:</p>
@@ -561,45 +575,6 @@
                 mobileMenu.classList.toggle('hidden');
             });
         }
-
-        // --- SISTEMA DE CORES DAS FAIXAS ---
-        document.addEventListener('DOMContentLoaded', function() {
-            const beltContainers = document.querySelectorAll('.belt-container');
-            
-            beltContainers.forEach(container => {
-                const graduacaoText = container.getAttribute('data-graduacao').toLowerCase();
-                const square = container.querySelector('.belt-square');
-                const text = container.querySelector('.belt-text');
-                
-                let color = '#E85D4A'; // Cor padrão (Laranja do site)
-
-                if (graduacaoText.includes('marrom')) {
-                    color = '#5D4037'; // Marrom
-                } else if (graduacaoText.includes('preta') || graduacaoText.includes('dan')) {
-                    color = '#000000'; // Preta
-                } else if (graduacaoText.includes('roxa')) {
-                    color = '#7B1FA2'; // Roxa
-                } else if (graduacaoText.includes('verde')) {
-                    color = '#388E3C'; // Verde
-                } else if (graduacaoText.includes('laranja')) {
-                    color = '#F57C00'; // Laranja
-                } else if (graduacaoText.includes('azul')) {
-                    color = '#1976D2'; // Azul
-                } else if (graduacaoText.includes('amarela')) {
-                    color = '#FBC02D'; // Amarela
-                } else if (graduacaoText.includes('branca')) {
-                    color = '#F5F5F5'; // Branca (cinza bem claro)
-                    square.style.border = '1px solid #BDBDBD'; // Borda para aparecer no fundo branco
-                    text.style.color = '#757575'; // Texto cinza para leitura
-                    square.style.backgroundColor = color;
-                    return; // Retorna para não sobrescrever
-                }
-
-                // Aplica a cor
-                square.style.backgroundColor = color;
-                text.style.color = color;
-            });
-        });
 
         // Dark Mode Logic
         const themeToggleBtn = document.getElementById('theme-toggle');

@@ -48,6 +48,27 @@ class Atleta(models.Model):
 
     def __str__(self):
         return self.nome
+    
+    #Adicionando cor das faixas
+    @property
+    def cor_faixa(self):
+        """Retorna o código HEX da cor baseado no texto da graduação."""
+        texto = self.graduacao.lower() # Converte para minúsculo para facilitar a busca
+        
+        # Dicionário de cores (Você pode ajustar os tons HEX como quiser)
+        if 'branca' in texto: return '#FFFFFF'
+        if 'cinza' in texto: return '#BEBEBE'
+        if 'azul' in texto: return '#007bff' # Azul Bootstrap
+        if 'amarela' in texto: return '#FFD700'
+        if 'laranja' in texto: return '#FFA500'
+        if 'verde' in texto: return '#28a745' # Verde Bootstrap
+        if 'roxa' in texto: return '#800080'
+        if 'marrom' in texto: return '#8B4513' # SaddleBrown
+        if 'preta' in texto: return '#000000'
+        if 'coral' in texto: return '#FF7F50'
+        if 'vermelha' in texto: return '#dc3545' # Vermelho Bootstrap
+        
+        return '#ddd' # Cinza claro padrão se não achar nenhuma cor
 
 class Evento(models.Model):
     TIPO_CHOICES = [
