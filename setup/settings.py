@@ -26,12 +26,22 @@ render_host = os.getenv("RENDER_EXTERNAL_HOSTNAME")
 if render_host:
     ALLOWED_HOSTS.append(render_host)
 
-# (Se tiver domínio próprio, adicione aqui: ALLOWED_HOSTS.append("seusite.com"))
+# ✅ ADICIONADO: Domínio customizado (sem https)
+# Isso permite que o Django aceite conexões vindas do seu domínio
+ALLOWED_HOSTS.append("associacaomarciliomoraes.com.br")
+ALLOWED_HOSTS.append("www.associacaomarciliomoraes.com.br")
+
 
 CSRF_TRUSTED_ORIGINS = []
 if render_host:
     CSRF_TRUSTED_ORIGINS.append(f"https://{render_host}")
-    CSRF_TRUSTED_ORIGINS.append("https://*.onrender.com")
+
+# ✅ ADICIONADO: Domínio customizado (com https://)
+# Isso permite fazer login e enviar formulários (evita erro de CSRF)
+CSRF_TRUSTED_ORIGINS.append("https://associacaomarciliomoraes.com.br")
+CSRF_TRUSTED_ORIGINS.append("https://www.associacaomarciliomoraes.com.br")
+
+CSRF_TRUSTED_ORIGINS.append("https://*.onrender.com")
 
 # --------------------
 # Apps
